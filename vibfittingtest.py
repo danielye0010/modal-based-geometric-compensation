@@ -7,7 +7,6 @@ from scipy.sparse import coo_matrix, csr_matrix
 
 
 # ===================== CONFIG ===================== #
-BASE_PATH   = Path(r"C:\Users\31746\OneDrive\Desktop\New folder")
 MODES_CSV   = BASE_PATH / "mode" / "all_modes.csv"
 
 MASS_FILE   = BASE_PATH / "Msparse.txt"
@@ -227,4 +226,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
