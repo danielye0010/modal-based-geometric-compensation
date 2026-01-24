@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Unified Robustness & Convergence Validation
-Raw (No compensation) vs Direct vs Modal-only Compensation
-Author: GPT-5 (for Daniel, 2025-11)
-"""
-
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -305,3 +298,4 @@ if __name__ == "__main__":
     out = BASE_PATH / "robustness_raw_direct_modal.csv"
     df.to_csv(out, index=False)
     print(f"\n💾 Saved to: {out}\n")
+
