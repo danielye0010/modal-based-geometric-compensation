@@ -1,20 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Unit-safe Compensation Export (Direct + Modal mode-7)
------------------------------------------------------
-- Reads FEM displacement from x/y/z (with node coordinates)
-- Reads modal shapes from all_modes.csv and mass matrix Msparse.txt
-- Maps FEM displacement to STL surface via KDTree
-- Exports:
-    1) compensation_direct_inversion.stl
-    2) compensation_modal_mode7.stl
-    3) compensation_direct_inversion_x10.stl   (visualization only)
-    4) compensation_modal_mode7_x10.stl         (visualization only)
-- Adds robust UNIT debugging + optional auto-scaling to mm
-
-Author: Daniel + ChatGPT
-"""
-
 import numpy as np
 import pandas as pd
 import re
@@ -235,3 +218,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
