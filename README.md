@@ -9,15 +9,15 @@ non-physical noise, sparsity, and scaling artifacts commonly encountered in scan
 
 ## Key scripts
 
-- `scripts/export_compensation_stl.py`  
+- `compensationgen.py`  
   Export compensated STL meshes using (1) direct inversion and (2) single-mode modal compensation (e.g., mode 7).
   Also exports x10 exaggerated versions for visualization.
 
-- `scripts/robustness_benchmark.py`  
+- `mcmc.py`  
   Monte-Carlo robustness benchmark: Raw vs Direct vs Modal under disturbances (noise / sparsity / scaling),
   with paired t-tests and summary CSV output.
 
-- `scripts/modal_energy_mass_metric.py`  
+- `vibfitting.py`  
   Mass-metric modal energy analysis: cumulative/incremental explained energy curve and CSV table.
 
 ## Inputs expected (from FEM)
