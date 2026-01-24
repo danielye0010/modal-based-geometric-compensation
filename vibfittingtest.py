@@ -1,16 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Mass-metric Modal Energy Analysis (XYZ displacement)
----------------------------------------------------
-- Modal coefficients obtained via mass-weighted least squares
-- Explained energy evaluated in the mass metric
-- Prints detailed numeric results (per mode)
-- Saves CSV tables and plots
-
-Author: Daniel + ChatGPT
-Date: 2025-11-15
-"""
-
 import numpy as np
 import pandas as pd
 import re, time
@@ -240,3 +227,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
