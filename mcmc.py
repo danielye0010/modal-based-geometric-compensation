@@ -7,8 +7,6 @@ from scipy.spatial import cKDTree
 from scipy.stats import ttest_rel
 
 # ==================== CONFIG ==================== #
-BASE_PATH = Path(r"C:\Users\31746\OneDrive\Desktop\newterfexp")
-
 MODES_CSV = BASE_PATH / "mode" / "all_modes.csv"
 MASS_FILE = BASE_PATH / "Msparse.txt"
 STIFF_FILE = BASE_PATH / "Ksparse.txt"
@@ -17,8 +15,8 @@ X_FILE = BASE_PATH / "newx.txt"
 Y_FILE = BASE_PATH / "newy.txt"
 Z_FILE = BASE_PATH / "newz.txt"
 
-SKIP_RIGID = 6     # 跳过刚体模态 → 第7模态是第一个振动模态
-NUM_FLEX = 1       # ⭐ 只使用第7模态
+SKIP_RIGID = 6    
+NUM_FLEX = 1       
 MC_RUNS = 20
 NOISE_LEVEL = 0.05
 SPARSE_RATIO = 0.7
@@ -298,4 +296,5 @@ if __name__ == "__main__":
     out = BASE_PATH / "robustness_raw_direct_modal.csv"
     df.to_csv(out, index=False)
     print(f"\n💾 Saved to: {out}\n")
+
 
