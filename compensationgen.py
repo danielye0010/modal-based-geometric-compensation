@@ -136,7 +136,7 @@ def auto_choose_scales(fem_len, stl_len, disp_max):
 # ===================== MAIN ===================== #
 def main():
     print("="*90)
-    print(" Unit-safe Compensation Export (with x10 visualization STL) ")
+    print(" Unit-safe Compensation Export (with x5 visualization STL) ")
     print("="*90)
 
     df_disp = build_disp_from_xyz(X_FILE, Y_FILE, Z_FILE)
@@ -179,11 +179,11 @@ def main():
     out1 = BASE_PATH / "compensation_direct_inversion.stl"
     mesh_DI.export(out1)
 
-    # ---- x10 exaggerated ----
+    # ---- x5 exaggerated ----
     mesh_DI_ex = mesh.copy()
     mesh_DI_ex.vertices += EXAG_SCALE * disp_stl_DI
     mesh_DI_ex.vertices /= STL_SCALE
-    out1x = BASE_PATH / "compensation_direct_inversion_x10.stl"
+    out1x = BASE_PATH / "compensation_direct_inversion_x5.stl"
     mesh_DI_ex.export(out1x)
 
     # ================= Modal Compensation =================
@@ -201,18 +201,18 @@ def main():
     out2 = BASE_PATH / "compensation_modal_mode7.stl"
     mesh_M.export(out2)
 
-    # ---- x10 exaggerated ----
+    # ---- x5 exaggerated ----
     mesh_M_ex = mesh.copy()
     mesh_M_ex.vertices += EXAG_SCALE * disp_stl_modal
     mesh_M_ex.vertices /= STL_SCALE
-    out2x = BASE_PATH / "compensation_modal_mode7_x10.stl"
+    out2x = BASE_PATH / "compensation_modal_mode7_x5.stl"
     mesh_M_ex.export(out2x)
 
     print("[OK] Exported:")
     print(f"  {out1.name}")
     print(f"  {out2.name}")
-    print(f"  {out1x.name} (x10 visualization)")
-    print(f"  {out2x.name} (x10 visualization)")
+    print(f"  {out1x.name} (x5 visualization)")
+    print(f"  {out2x.name} (x5 visualization)")
     print("="*90)
 
 
