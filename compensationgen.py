@@ -7,8 +7,10 @@ from scipy.spatial import cKDTree
 import trimesh
 
 
-# ===================== CONFIG ===================== 
-STL_FILE  = BASE_PATH / "newplat.stl"
+BASE_PATH = Path(__file__).resolve().parent
+
+# ===================== CONFIG =====================
+STL_FILE = BASE_PATH / "newplat.stl"
 MODES_CSV = BASE_PATH / "mode" / "all_modes.csv"
 MASS_FILE = BASE_PATH / "Msparse.txt"
 
@@ -216,5 +218,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
