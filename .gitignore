@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Generated analysis outputs
+compensation_direct_inversion.stl
+compensation_direct_inversion_x5.stl
+compensation_modal_mode7.stl
+compensation_modal_mode7_x5.stl
+energy_table_mass_metric.csv
+energy_mass_metric.png
+robustness_raw_direct_modal.csv

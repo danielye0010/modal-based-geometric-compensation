@@ -6,6 +6,8 @@ from scipy.sparse import csr_matrix, coo_matrix
 from scipy.spatial import cKDTree
 from scipy.stats import ttest_rel
 
+BASE_PATH = Path(__file__).resolve().parent
+
 # ==================== CONFIG ==================== #
 MODES_CSV = BASE_PATH / "mode" / "all_modes.csv"
 MASS_FILE = BASE_PATH / "Msparse.txt"
@@ -15,8 +17,8 @@ X_FILE = BASE_PATH / "newx.txt"
 Y_FILE = BASE_PATH / "newy.txt"
 Z_FILE = BASE_PATH / "newz.txt"
 
-SKIP_RIGID = 6    
-NUM_FLEX = 1       
+SKIP_RIGID = 6
+NUM_FLEX = 1
 MC_RUNS = 20
 NOISE_LEVEL = 0.05
 SPARSE_RATIO = 0.7
@@ -29,9 +31,6 @@ NOISE_PER_STEP = 0.02
 np.set_printoptions(precision=5, suppress=True)
 
 
-# ==================================================
-# I/O FUNCTIONS
-# ==================================================
 def read_modes_csv(path: Path):
     df = pd.read_csv(path, sep=None, engine="python")
     df.columns = [c.strip() for c in df.columns]
@@ -79,7 +78,7 @@ def read_sparse_matrix_txt(path: Path) -> csr_matrix:
 def read_deform_component(path: Path):
     try:
         df = pd.read_csv(path, sep="\t", engine="python")
-    except:
+    except Exception:
         df = pd.read_csv(path, sep=r"\s+", engine="python")
 
     df.columns = [c.strip() for c in df.columns]
@@ -99,9 +98,6 @@ def read_xyz_disp(x, y, z, nodes):
     return df.to_numpy().reshape(-1)
 
 
-# ==================================================
-# METRICS FUNCTIONS
-# ==================================================
 def rms(x):
     return float(np.sqrt(np.mean(x ** 2)))
 
@@ -124,9 +120,6 @@ def energy_ratio_K(D_num, D_ref, K):
     return num / den if den > 1e-12 else np.nan
 
 
-# ==================================================
-# COMPENSATION OPERATORS
-# ==================================================
 def fit_modal_M_weighted(D, Phi, M):
     A = Phi.T @ (M @ Phi)
     b = Phi.T @ (M @ D)
@@ -148,9 +141,6 @@ def comp_modal(D, Phi_vib, M):
     return Dout
 
 
-# ==================================================
-# DISTURBANCES
-# ==================================================
 def disturb_none(D, **kwargs):
     return D.copy()
 
@@ -169,9 +159,6 @@ def disturb_scale(D, scale, rng):
     return D * scale
 
 
-# ==================================================
-# ROBUSTNESS + CONVERGENCE
-# ==================================================
 def run_validation(D_true, method, disturb, kwargs, Phi_vib, M, K, ref_xyz,
                    runs=20, iters=6, seed=0):
 
@@ -181,7 +168,6 @@ def run_validation(D_true, method, disturb, kwargs, Phi_vib, M, K, ref_xyz,
     for _ in range(runs):
         Dp = disturb(D_true, **kwargs, rng=rng)
 
-        # --- static ---
         if method == "raw":
             Dout = comp_raw(Dp)
         elif method == "direct":
@@ -193,7 +179,6 @@ def run_validation(D_true, method, disturb, kwargs, Phi_vib, M, K, ref_xyz,
         CURV.append(abs(curvature_rms(Dout, ref_xyz) - curvature_rms(D_true, ref_xyz)))
         GAM.append(energy_ratio_K(Dout, D_true, K))
 
-        # --- dynamic ---
         Dk = Dp.copy()
         normT = np.linalg.norm(D_true)
         err_hist = []
@@ -220,9 +205,6 @@ def run_validation(D_true, method, disturb, kwargs, Phi_vib, M, K, ref_xyz,
     )
 
 
-# ==================================================
-# MAIN
-# ==================================================
 if __name__ == "__main__":
     print("\n================ ROBUSTNESS: Raw vs Direct vs Modal ================\n")
 
@@ -238,11 +220,10 @@ if __name__ == "__main__":
     D_true = D_true[:ndof]
     ref_xyz = ref_xyz[:ndof // 3]
 
-    # ⭐ Only the 7th mode
     Phi_vib = Phi_all[:, SKIP_RIGID: SKIP_RIGID + NUM_FLEX]
 
     specs = [
-        ("None", disturb_none, dict()),  # ⭐ baseline
+        ("None", disturb_none, dict()),
         ("Noise", disturb_noise, dict(ratio=NOISE_LEVEL)),
         ("Sparse", disturb_sparse, dict(keep_ratio=SPARSE_RATIO)),
         ("Scale", disturb_scale, dict(scale=SCALE_FACTOR)),
@@ -260,7 +241,6 @@ if __name__ == "__main__":
         res_mod = run_validation(D_true, "modal", disturb, kw, Phi_vib, M, K, ref_xyz,
                                  MC_RUNS, ITER_STEPS, RAND_SEED)
 
-        # paired t-test Direct vs Modal
         t_rms, p_rms = ttest_rel(res_dir["RMS_list"], res_mod["RMS_list"])
         t_cur, p_cur = ttest_rel(res_dir["Curv_list"], res_mod["Curv_list"])
         t_gam, p_gam = ttest_rel(res_dir["Gamma_list"], res_mod["Gamma_list"])
@@ -271,30 +251,24 @@ if __name__ == "__main__":
             Curv_Raw=res_raw["Curv"],
             Gamma_Raw=res_raw["Gamma"],
             Rho_Raw=res_raw["Rho"],
-
             RMS_Direct=res_dir["RMS"],
             Curv_Direct=res_dir["Curv"],
             Gamma_Direct=res_dir["Gamma"],
             Rho_Direct=res_dir["Rho"],
-
             RMS_Modal=res_mod["RMS"],
             Curv_Modal=res_mod["Curv"],
             Gamma_Modal=res_mod["Gamma"],
             Rho_Modal=res_mod["Rho"],
-
             RMS_Improve=100 * (res_dir["RMS"] - res_mod["RMS"]) / res_dir["RMS"],
             Curv_Improve=100 * (res_dir["Curv"] - res_mod["Curv"]) / res_dir["Curv"],
             Gamma_Improve=100 * (res_mod["Gamma"] - res_dir["Gamma"]) / max(1e-9, res_dir["Gamma"]),
-
             p_RMS=p_rms, p_Curv=p_cur, p_Gamma=p_gam
         ))
 
     df = pd.DataFrame(rows)
-    print("\n📊 FINAL SUMMARY:")
+    print("\nFINAL SUMMARY:")
     print(df.round(5).to_string(index=False))
 
     out = BASE_PATH / "robustness_raw_direct_modal.csv"
     df.to_csv(out, index=False)
-    print(f"\n💾 Saved to: {out}\n")
-
-
+    print(f"\nSaved to: {out}\n")
